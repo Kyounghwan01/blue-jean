@@ -1,3 +1,9 @@
+# todo
+
+1. kakao window 정리
+2. 로그인 hooks 정리
+3. route suspense 정리 nono 안해야지
+
 # firebase
 
 1. require 어떻게

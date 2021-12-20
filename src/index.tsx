@@ -1,13 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
+import { Provider } from "react-redux";
+import { store } from "app/store";
+import Router from "router";
 import reportWebVitals from "./reportWebVitals";
+import { MyWindow } from "types";
 import "./firebase";
+
+// Kakao Javascript SDK 초기화
+(window as MyWindow & typeof globalThis).Kakao.init(
+  process.env.REACT_APP_KAKAO_CLIENT_SECRET as string
+);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <Router />
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );
