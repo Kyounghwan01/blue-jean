@@ -34,3 +34,10 @@ const next = query(usersCollectionRef, startAfter(lastVisible), limit(25)); // 4
 
 - 색인 추가해야함
 - 컬렉션에 해당 db 넣고 조건 추가
+
+## 사용해야할 kakao api
+
+- 로그인
+- 로그아웃
+- 탈퇴
+- 서비스 사용중인 사람 카카오 id 리스트
