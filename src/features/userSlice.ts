@@ -1,48 +1,44 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  AuthSliceStateType,
-  LoginPayloadType
-} from "features/types/userSliceType";
+import { UserSliceStateType } from "features/types/userSliceType";
 
-const initialState: AuthSliceStateType = {
-  id: "",
-  password: "",
-  errorMessage: null,
-  isLogin: false
+const initialState: UserSliceStateType = {
+  isLogin: false,
+  email: null,
+  gender: null,
+  id: null,
+  name: null,
+  profileImage: "",
+  token: null
 };
 
 export const userSlice = createSlice({
-  name: "auto",
+  name: "user",
   initialState,
   reducers: {
-    initLoginCheck: state => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        state.isLogin = true;
-      } else {
-        state.isLogin = false;
-      }
-    },
     logOut: state => {
-      localStorage.removeItem("token");
-      state.isLogin = false;
+      const { isLogin, email, gender, name, profileImage, token, id } =
+        initialState;
+      state.email = email;
+      state.gender = gender;
+      state.name = name;
+      state.profileImage = profileImage;
+      state.token = token;
+      state.isLogin = isLogin;
+      state.id = id;
     },
-    login: (state, action: PayloadAction<LoginPayloadType>) => {
-      const { id, password } = action.payload;
-      if (id === "alyce" && password === "alyce123") {
-        state.isLogin = true;
-        state.id = "";
-        state.password = "";
-        state.errorMessage = null;
-        localStorage.setItem("token", "already-logged-account");
-      } else {
-        state.errorMessage = "아이디 또는 패스워드가 다릅니다!";
-        state.isLogin = false;
-      }
+    login: (state, action: PayloadAction<UserSliceStateType>) => {
+      const { email, gender, name, profileImage, token, id } = action.payload;
+      state.email = email;
+      state.gender = gender;
+      state.name = name;
+      state.profileImage = profileImage;
+      state.token = token;
+      state.isLogin = true;
+      state.id = id;
     }
   }
 });
 
-export const { initLoginCheck, logOut, login } = userSlice.actions;
+export const { logOut, login } = userSlice.actions;
 
 export default userSlice.reducer;

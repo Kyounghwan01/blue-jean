@@ -1,63 +1,47 @@
-import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "app/store";
 import { MyWindow } from "../types";
+import { db } from "api/firebase";
+import { deleteDoc, doc } from "firebase/firestore/lite";
+import { logOut } from "features/userSlice";
 
 const kakao = (window as MyWindow & typeof globalThis).Kakao;
 
 const Profile = () => {
-  const [user_id, setUserId] = useState();
-  const [nickName, setNickName] = useState();
-  const [profileImage, setProfileImage] = useState();
-  const getProfile = async () => {
-    console.log((window as MyWindow & typeof globalThis).Kakao.API);
-    try {
-      // Kakao SDK API를 이용해 사용자 정보 획득
-      const data = await (
-        window as MyWindow & typeof globalThis
-      ).Kakao.API.request({
-        url: "/v2/user/me"
-      });
-      console.log(data);
-      // 사용자 정보 변수에 저장
-      setUserId(data.id);
-      setNickName(data.properties.nickname);
-      setProfileImage(data.properties.profile_image);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  useEffect(() => {
-    getProfile();
-  }, []);
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
   const logout = () => {
-    const res = kakao.Auth.getAccessToken();
-    console.log(res);
-    const resLogout = kakao.Auth.logout(() => {
-      console.log("로그아웃 되었습니다.", kakao.Auth.getAccessToken());
+    kakao.Auth.logout(() => {
+      dispatch(logOut());
     });
-    console.log(resLogout);
   };
 
   const breakout = () => {
     // 탈퇴
     kakao.API.request({
       url: "/v1/user/unlink",
-      success: function (response: string) {
+      success: async (response: string) => {
         console.log(response);
+        const userDoc = doc(db, "users", String(user.id));
+        await deleteDoc(userDoc);
       },
       fail: function (error: string) {
         console.log(error);
       }
     });
+    // logout해야 token 끊김
+    logout();
   };
 
   return (
     <div>
       <button onClick={logout}>로그아웃</button>
       <button onClick={breakout}>탈퇴</button>
-      <h2>{user_id}</h2>
-      <h2>{nickName}</h2>
-      <img src={profileImage} alt="profile" />
+      {JSON.stringify(user)}
+      <h2>{user.id}</h2>
+      <h2>{user.name}</h2>
+      <img src={user.profileImage} alt="profile" />
     </div>
   );
 };

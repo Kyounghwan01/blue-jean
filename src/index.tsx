@@ -1,11 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
+import { ThemeProvider } from "styled-components";
+import GlobalStyle from "assets/styles/global-styles";
+import { theme } from "assets/styles/theme";
 import { store } from "app/store";
 import Router from "router";
 import reportWebVitals from "./reportWebVitals";
+import { ModalProvider, ModalRoot } from "context";
 import { MyWindow } from "types";
-import "./firebase";
+import "api/firebase";
 
 // Kakao Javascript SDK 초기화
 (window as MyWindow & typeof globalThis).Kakao.init(
@@ -15,7 +19,14 @@ import "./firebase";
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Router />
+      <ThemeProvider theme={theme}>
+        <ModalProvider>
+          <GlobalStyle />
+          <ModalRoot />
+          <div id="portal" />
+          <Router />
+        </ModalProvider>
+      </ThemeProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")
